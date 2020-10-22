@@ -12,6 +12,13 @@ prost = "0.6"
 tract-nnef = { path = "../../nnef" }
 tract-onnx = { path = "../../onnx" }
 
+[features]
+opset9 = []
+opset10 = []
+opset11 = []
+opset12 = []
+default = [ "opset12" ]
+
 [dev-dependencies]
 env_logger = "0.7"
 

@@ -1,5 +1,22 @@
 use std::{fs, path};
 
+fn versions() -> Vec<&'static str> {
+    let mut versions = vec!();
+    if cfg!(feature = "opset9") {
+        versions.push("1.4.1");
+    }
+    if cfg!(feature = "opset10") {
+        versions.push("1.5.0");
+    }
+    if cfg!(feature = "opset11") {
+        versions.push("1.6.0");
+    }
+    if cfg!(feature = "opset12") {
+        versions.push("1.7.0");
+    }
+    versions
+}
+
 pub fn dir() -> path::PathBuf {
     let cache = ::std::env::var("CACHEDIR").ok().unwrap_or("../../.cached".to_string());
     fs::create_dir_all(&cache).unwrap();
@@ -14,7 +31,7 @@ pub fn ensure_onnx_git_checkout() {
         fs::create_dir_all(dir()).unwrap();
         let lockfile = dir().join(".lock");
         let _lock = fs::File::create(lockfile).unwrap().lock_exclusive();
-        for v in &["1.4.1", "1.5.0", "1.6.0", "1.7.0"] {
+        for v in versions() {
             let wanted = dir().join(format!("onnx-{}", v));
             if !wanted.join("onnx/backend/test/data").exists() {
                 let tmp = wanted.with_extension("tmp");
@@ -126,7 +143,7 @@ fn main() {
     fs::create_dir_all(&test_dir).unwrap();
     let mut root = fs::File::create(test_dir.join("root.rs")).unwrap();
     for set in "node real simple pytorch-operator pytorch-converted".split_whitespace() {
-        for ver in "1.4.1 1.5.0 1.6.0 1.7.0".split_whitespace() {
+        for ver in versions() {
             make_test_file(&mut root, set, ver);
         }
     }
