@@ -22,7 +22,6 @@ jobs:
           ~/.cargo/registry
           ~/.cargo/git
           target
-          .cache
         key: ${{ runner.os }}-cargo-${{matrix.rust}}
     - name: Native script
       run: .travis/native.sh
