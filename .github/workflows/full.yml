@@ -20,6 +20,6 @@ jobs:
           ~/.cargo/registry
           ~/.cargo/git
           target
-        key: ${{ runner.os }}-cargo-${{matrix.rust}}
+        key: ${{ runner.os }}-cargo-${{matrix.rust}}-2
     - name: Full test 
       run: .travis/native.sh
