@@ -55,6 +55,7 @@ if [ -n "$CI" ]
 then
     for opset in opset9 opset10 opset11 opset12
     do
+        hostname
         (cd harness/onnx-test-suite ; cargo -q test -q --release --features $opset)
         rm -rf $CACHEDIR/onnx
     done
