@@ -53,16 +53,19 @@ fi
 
 if [ -n "$CI" ]
 then
-    for opset in onnx_1_4_1 onnx_1_5 onnx_1_6 onnx_1_7
+    for opset in onnx_1_4_1 onnx_1_5_0 onnx_1_6_0 onnx_1_7_0
     do
         (
-        flock -s 200
-        (cd harness/onnx-test-suite ; cargo -q test -q --release --features $opset)
+        flock -e -n 9
+        cd harness/onnx-test-suite
+        cargo -q check -q --features $opset
+        cargo -q test -q --release --features $opset
+        cd ../..
         rm -rf $CACHEDIR/onnx/$opset
-        ) 200 > $CACHEDIR/onnx-lock-$opset
-        hostname
+        ) 9> $CACHEDIR/onnx-lock-$opset
     done
 else
+    cargo -q check -p onnx-test-suite --all-features
     cargo -q test -q -p onnx-test-suite --release --all-features
 fi
 
