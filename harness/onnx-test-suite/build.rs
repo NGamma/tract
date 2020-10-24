@@ -2,16 +2,16 @@ use std::{fs, path};
 
 fn versions() -> Vec<&'static str> {
     let mut versions = vec!();
-    if cfg!(feature = "opset9") {
+    if cfg!(feature = "onnx_1_4_1") {
         versions.push("1.4.1");
     }
-    if cfg!(feature = "opset10") {
+    if cfg!(feature = "onnx_1_5_0") {
         versions.push("1.5.0");
     }
-    if cfg!(feature = "opset11") {
+    if cfg!(feature = "onnx_1_6_0") {
         versions.push("1.6.0");
     }
-    if cfg!(feature = "opset12") {
+    if cfg!(feature = "onnx_1_7_0") {
         versions.push("1.7.0");
     }
     versions
@@ -32,7 +32,7 @@ pub fn ensure_onnx_git_checkout() {
         let lockfile = dir().join(".lock");
         let _lock = fs::File::create(&lockfile).unwrap().lock_exclusive();
         for v in versions() {
-            let wanted = dir().join(format!("onnx-{}", v));
+            let wanted = dir().join(format!("onnx-{}", v.replace(".", "_")));
             if !wanted.join("onnx/backend/test/data").exists() {
                 let tmp = wanted.with_extension("tmp");
                 let _ = fs::remove_dir_all(&wanted);
@@ -75,7 +75,7 @@ pub fn make_test_file(root: &mut fs::File, tests_set: &str, onnx_tag: &str) {
     use Mode::*;
     ensure_onnx_git_checkout();
     let node_tests =
-        dir().join(format!("onnx-{}", onnx_tag)).join("onnx/backend/test/data").join(tests_set);
+        dir().join(format!("onnx-{}", onnx_tag.replace(".", "_"))).join("onnx/backend/test/data").join(tests_set);
     assert!(node_tests.exists());
     let working_list_file =
         path::PathBuf::from(".").join(format!("{}-{}.txt", tests_set, onnx_tag));

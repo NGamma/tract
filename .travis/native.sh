@@ -53,11 +53,11 @@ fi
 
 if [ -n "$CI" ]
 then
-    for opset in opset9 opset10 opset11 opset12
+    for opset in onnx_1_4_1 onnx_1_5 onnx_1_6 onnx_1_7
     do
         hostname
         (cd harness/onnx-test-suite ; cargo -q test -q --release --features $opset)
-        rm -rf $CACHEDIR/onnx
+        rm -rf $CACHEDIR/onnx/$opset
     done
 else
     cargo -q test -q -p onnx-test-suite --release --all-features
